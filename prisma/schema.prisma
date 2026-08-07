@@ -1,17 +1,26 @@
 // JI Global Academy — data model
 //
-// Provider is SQLite so the platform runs with zero infrastructure. Moving to
-// Postgres is a two-line change (provider + DATABASE_URL): every field below
-// uses portable scalar types only. SQLite has no native enum or array support,
-// so status/kind columns are strings validated in TypeScript
-// (see src/lib/enums.ts) and list-shaped columns hold JSON text.
+// Postgres, because the app is deployed to serverless hosting where a local
+// SQLite file would be read-only and thrown away between requests. Local
+// development uses the same engine (`docker compose up -d`), so there is no
+// class of bug that only appears in production.
+//
+// Every field uses portable scalar types: status and kind columns are strings
+// validated in TypeScript (src/lib/enums.ts) and list-shaped columns hold JSON
+// text, rather than native enums and arrays. That is deliberate — it keeps the
+// schema readable, keeps validation in one place, and means the model would
+// move to another engine without a rewrite.
 
 generator client {
   provider = "prisma-client-js"
+  // "native" for local work; the RHEL target is the query engine that Netlify
+  // and other AWS Lambda based hosts need. Without it the deployed function
+  // starts and then fails on its first query.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -5,21 +5,24 @@ catalog, a lesson player with a downloadable working pack for every lesson,
 progress tracking, quizzes, marked assignments, verifiable certificates, a
 community, and a payment gateway.
 
-Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 4 and Prisma. It
-runs with **zero infrastructure** — SQLite and a mock payment provider by
-default — and moves to Postgres and Stripe/Paystack by changing environment
-variables.
+Built with Next.js 15 (App Router), TypeScript, Tailwind CSS 4, Prisma and
+Postgres. Payments default to a mock provider, so it runs without any keys;
+switching to Stripe or Paystack is an environment variable.
 
 ---
 
 ## Quick start
 
 ```bash
+docker compose up -d          # Postgres on :5432
 npm install
 cp .env.example .env          # then set SESSION_SECRET
-npm run setup                 # generate client, create the database, seed it
+npm run setup                 # generate client, create the schema, seed it
 npm run dev                   # http://localhost:3000
 ```
+
+No Docker? Point `DATABASE_URL` at any Postgres — a free Neon or Supabase
+database works — and skip the first line.
 
 `npm run setup` seeds four complete courses, generates **124 downloadable
 documents**, and creates five learners at different stages so every screen has
@@ -211,10 +214,10 @@ Add the course to `prisma/content/courses/index.ts` and re-run `npm run db:seed`
 
 ## Going to production
 
-1. **Postgres.** Change `provider` in `prisma/schema.prisma` to `postgresql`
-   and set `DATABASE_URL`. Every column already uses portable scalar types —
-   SQLite has no enums or arrays, so status columns are strings validated in
-   `src/lib/enums.ts` and list columns hold JSON.
+1. **Database.** Set `DATABASE_URL` to your host's pooled connection string.
+   Run `npx prisma db push` once, then `npm run db:seed` if you want the demo
+   content — **the seed clears the tables first, so never run it against a
+   database with real learners in it.**
 2. **Secrets.** Set `SESSION_SECRET` (`openssl rand -base64 48`). The app
    refuses to start in production without it.
 3. **`APP_URL`.** Read at runtime, unlike `NEXT_PUBLIC_*` which is inlined at
@@ -232,7 +235,8 @@ Add the course to `prisma/content/courses/index.ts` and re-run `npm run db:seed`
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Development server |
-| `npm run build` | `prisma generate` then a production build |
+| `npm run build` | Generate the client, rebuild the download documents, build |
+| `npm run content:build` | Regenerate the downloads only — never touches the database |
 | `npm run start` | Serve the production build |
 | `npm run typecheck` | `tsc --noEmit` — the gate that must stay green |
 | `npm run setup` | Generate, push schema, seed |
@@ -242,7 +246,7 @@ Add the course to `prisma/content/courses/index.ts` and re-run `npm run db:seed`
 
 ## Verified
 
-Checked against a production build driven through a real browser:
+Checked against a production build on Postgres, driven through a real browser:
 
 - Registration → auto-enrolment in the free orientation course → dashboard
 - Lesson completion advancing progress, and the dashboard reflecting it
