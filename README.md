@@ -215,9 +215,10 @@ Add the course to `prisma/content/courses/index.ts` and re-run `npm run db:seed`
 ## Going to production
 
 1. **Database.** Set `DATABASE_URL` to your host's pooled connection string.
-   Run `npx prisma db push` once, then `npm run db:seed` if you want the demo
-   content — **the seed clears the tables first, so never run it against a
-   database with real learners in it.**
+   Nothing else to do: `npm run build` syncs the schema and, **only if the
+   database has no users in it**, seeds the demo content. Once a single real
+   learner exists that step becomes a permanent no-op, so redeploys can never
+   wipe them. Set `SEED_ON_DEPLOY=0` to skip seeding entirely.
 2. **Secrets.** Set `SESSION_SECRET` (`openssl rand -base64 48`). The app
    refuses to start in production without it.
 3. **`APP_URL`.** Read at runtime, unlike `NEXT_PUBLIC_*` which is inlined at
@@ -235,7 +236,8 @@ Add the course to `prisma/content/courses/index.ts` and re-run `npm run db:seed`
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Development server |
-| `npm run build` | Generate the client, rebuild the download documents, build |
+| `npm run build` | Sync the schema, rebuild the documents, seed if empty, build |
+| `npm run db:bootstrap` | Seed only if the database has no users (safe to re-run) |
 | `npm run content:build` | Regenerate the downloads only — never touches the database |
 | `npm run start` | Serve the production build |
 | `npm run typecheck` | `tsc --noEmit` — the gate that must stay green |
@@ -259,3 +261,5 @@ Checked against a production build on Postgres, driven through a real browser:
 - Download gating: anonymous users get preview material only (`200`), paid
   material is refused (`401`), and an enrolled learner from a different course
   is refused (`403`)
+- Deploy safety: a first build against an empty database migrates and seeds; a
+  redeploy with a real learner present leaves every row untouched

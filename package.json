@@ -5,12 +5,13 @@
   "description": "JI Global Academy — learning platform for JI Consultation",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && npm run content:build && next build",
+    "build": "prisma generate && prisma db push --skip-generate && npm run content:build && tsx scripts/bootstrap-db.ts && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "content:build": "tsx scripts/build-content.ts",
     "setup": "prisma generate && prisma db push && npm run db:seed",
     "db:push": "prisma db push",
+    "db:bootstrap": "tsx scripts/bootstrap-db.ts",
     "db:reset": "prisma db push --force-reset --skip-generate",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio"
