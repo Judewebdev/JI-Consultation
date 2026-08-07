@@ -1,0 +1,414 @@
+// JI Global Academy — data model
+//
+// Postgres, because the app is deployed to serverless hosting where a local
+// SQLite file would be read-only and thrown away between requests. Local
+// development uses the same engine (`docker compose up -d`), so there is no
+// class of bug that only appears in production.
+//
+// Every field uses portable scalar types: status and kind columns are strings
+// validated in TypeScript (src/lib/enums.ts) and list-shaped columns hold JSON
+// text, rather than native enums and arrays. That is deliberate — it keeps the
+// schema readable, keeps validation in one place, and means the model would
+// move to another engine without a rewrite.
+
+generator client {
+  provider = "prisma-client-js"
+  // "native" for local work; the RHEL target is the query engine that Netlify
+  // and other AWS Lambda based hosts need. Without it the deployed function
+  // starts and then fails on its first query.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// People
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("STUDENT") // STUDENT | INSTRUCTOR | ADMIN
+  headline     String? // "Operations lead, Lagos" — shown in community
+  country      String?
+  bio          String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  enrollments      Enrollment[]
+  taughtCourses    Course[]               @relation("CourseInstructor")
+  submissions      AssignmentSubmission[]
+  gradedWork       AssignmentSubmission[] @relation("SubmissionGrader")
+  quizAttempts     QuizAttempt[]
+  certificates     Certificate[]
+  orders           Order[]
+  threads          CommunityThread[]
+  posts            CommunityPost[]
+  downloads        ResourceDownload[]
+
+  @@index([role])
+}
+
+// ---------------------------------------------------------------------------
+// Catalog
+// ---------------------------------------------------------------------------
+
+model Course {
+  id              String  @id @default(cuid())
+  slug            String  @unique
+  title           String
+  subtitle        String
+  description     String
+  category        String
+  level           String  @default("BEGINNER") // BEGINNER | INTERMEDIATE | ADVANCED
+  language         String @default("English")
+  coverImageUrl   String?
+  welcomeVideoUrl String?
+  welcomeVideoNote String? // transcript/summary shown beside the welcome video
+  priceCents      Int     @default(0)
+  currency        String  @default("USD")
+  estimatedHours  Int     @default(0)
+  published       Boolean @default(false)
+  featured        Boolean @default(false)
+
+  // JSON string arrays — "what you'll learn" bullets and prerequisites.
+  outcomesJson     String @default("[]")
+  requirementsJson String @default("[]")
+
+  // Completion policy
+  passMark                Int     @default(70) // % needed on each quiz
+  requireAssignments      Boolean @default(true)
+  certificateEnabled      Boolean @default(true)
+
+  instructorId String?
+  instructor   User?   @relation("CourseInstructor", fields: [instructorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  modules      Module[]
+  resources    Resource[]
+  assignments  Assignment[]
+  quizzes      Quiz[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+  orders       Order[]
+  threads      CommunityThread[]
+
+  @@index([published, featured])
+  @@index([category])
+}
+
+model Module {
+  id        String  @id @default(cuid())
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title     String
+  summary   String?
+  position  Int
+
+  lessons     Lesson[]
+  assignments Assignment[]
+  quizzes     Quiz[]
+
+  @@unique([courseId, position])
+  @@index([courseId])
+}
+
+model Lesson {
+  id              String  @id @default(cuid())
+  moduleId        String
+  module          Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  slug            String
+  title           String
+  summary         String?
+  contentMd       String  @default("")
+  videoUrl        String?
+  durationMinutes Int     @default(0)
+  position        Int
+  isPreview       Boolean @default(false) // viewable without enrolling
+
+  resources Resource[]
+  progress  LessonProgress[]
+
+  @@unique([moduleId, position])
+  @@index([moduleId])
+  @@index([slug])
+}
+
+/// Downloadable material. Attached to a lesson (the usual case) or directly to
+/// a course (course-wide workbooks, slide decks).
+model Resource {
+  id          String  @id @default(cuid())
+  courseId    String
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId    String?
+  lesson      Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  // PDF_NOTES | CHECKLIST | TEMPLATE | SOP | WORKSHEET | PROMPT_LIBRARY |
+  // PRACTICE_EXERCISE | SLIDES | DATASET | LINK
+  kind        String
+  fileName    String
+  /// Path relative to the content root (see src/lib/resources.ts). Files are
+  /// never served statically — downloads go through an access-checked route.
+  filePath    String
+  mimeType    String  @default("application/octet-stream")
+  sizeBytes   Int     @default(0)
+  externalUrl String? // set when kind = LINK
+  position    Int     @default(0)
+
+  downloads ResourceDownload[]
+
+  @@index([courseId])
+  @@index([lessonId])
+}
+
+model ResourceDownload {
+  id           String   @id @default(cuid())
+  resourceId   String
+  resource     Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime @default(now())
+
+  @@index([resourceId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Assessment
+// ---------------------------------------------------------------------------
+
+model Assignment {
+  id          String  @id @default(cuid())
+  courseId    String
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  moduleId    String?
+  module      Module? @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+
+  title        String
+  briefMd      String
+  deliverables String  @default("[]") // JSON string array
+  points       Int     @default(100)
+  dueInDays    Int     @default(14) // days after enrolment
+  position     Int     @default(0)
+
+  submissions AssignmentSubmission[]
+
+  @@index([courseId])
+}
+
+model AssignmentSubmission {
+  id           String     @id @default(cuid())
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  contentMd   String  @default("")
+  linkUrl     String?
+  status      String  @default("SUBMITTED") // SUBMITTED | GRADED | RETURNED
+  grade       Int? // out of Assignment.points
+  feedback    String?
+  gradedById  String?
+  gradedBy    User?   @relation("SubmissionGrader", fields: [gradedById], references: [id], onDelete: SetNull)
+
+  submittedAt DateTime  @default(now())
+  gradedAt    DateTime?
+
+  @@unique([assignmentId, userId])
+  @@index([userId])
+}
+
+model Quiz {
+  id       String  @id @default(cuid())
+  courseId String
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  moduleId String? @unique // module quiz; null = final course quiz
+  module   Module? @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+
+  title            String
+  description      String?
+  passMark         Int     @default(70)
+  timeLimitMinutes Int? // null = untimed
+  maxAttempts      Int     @default(3)
+  isFinal          Boolean @default(false)
+
+  questions Question[]
+  attempts  QuizAttempt[]
+
+  @@index([courseId])
+}
+
+model Question {
+  id          String  @id @default(cuid())
+  quizId      String
+  quiz        Quiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  prompt      String
+  // SINGLE | MULTI | TRUE_FALSE
+  type        String  @default("SINGLE")
+  explanation String?
+  points      Int     @default(1)
+  position    Int
+
+  choices Choice[]
+
+  @@unique([quizId, position])
+  @@index([quizId])
+}
+
+model Choice {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String
+  isCorrect  Boolean  @default(false)
+  position   Int
+
+  @@index([questionId])
+}
+
+model QuizAttempt {
+  id     String @id @default(cuid())
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// JSON: { [questionId]: string[] } — the choice ids the learner picked.
+  answersJson  String    @default("{}")
+  scorePercent Int       @default(0)
+  passed       Boolean   @default(false)
+  startedAt    DateTime  @default(now())
+  submittedAt  DateTime?
+
+  @@index([quizId, userId])
+}
+
+// ---------------------------------------------------------------------------
+// Enrolment & progress
+// ---------------------------------------------------------------------------
+
+model Enrollment {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  status          String    @default("ACTIVE") // ACTIVE | COMPLETED | CANCELLED
+  progressPercent Int       @default(0)
+  enrolledAt      DateTime  @default(now())
+  lastAccessedAt  DateTime  @default(now())
+  completedAt     DateTime?
+
+  lessonProgress LessonProgress[]
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+model LessonProgress {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  completedAt    DateTime?
+  secondsWatched Int       @default(0)
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([enrollmentId, lessonId])
+  @@index([lessonId])
+}
+
+model Certificate {
+  id       String @id @default(cuid())
+  /// Human-quotable public id, e.g. JIGA-2026-8F3K9Q. Used by the verify page.
+  serial   String @unique
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  /// Denormalised so a certificate stays truthful if a course is later edited.
+  recipientName String
+  courseTitle   String
+  finalScore    Int      @default(0)
+  issuedAt      DateTime @default(now())
+  revokedAt     DateTime?
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+// ---------------------------------------------------------------------------
+// Payments
+// ---------------------------------------------------------------------------
+
+model Order {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  provider    String // mock | stripe | paystack
+  providerRef String? @unique // checkout session / transaction reference
+  amountCents Int
+  currency    String  @default("USD")
+  status      String  @default("PENDING") // PENDING | PAID | FAILED | REFUNDED
+  createdAt   DateTime @default(now())
+  paidAt      DateTime?
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Community
+// ---------------------------------------------------------------------------
+
+model CommunityThread {
+  id       String  @id @default(cuid())
+  courseId String?
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  authorId String
+  author   User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  title    String
+  body     String
+  category String   @default("GENERAL") // GENERAL | QUESTION | WIN | RESOURCE | INTRO
+  pinned   Boolean  @default(false)
+  locked   Boolean  @default(false)
+
+  createdAt      DateTime @default(now())
+  lastActivityAt DateTime @default(now())
+
+  posts CommunityPost[]
+
+  @@index([courseId])
+  @@index([lastActivityAt])
+}
+
+model CommunityPost {
+  id       String          @id @default(cuid())
+  threadId String
+  thread   CommunityThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId String
+  author   User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([threadId])
+}

@@ -1,0 +1,37 @@
+# Netlify deployment for JI Global Academy.
+#
+# The Next.js runtime plugin is detected automatically; nothing to declare.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Prisma's postinstall would otherwise run before DATABASE_URL is available
+  # in some build orders; `npm run build` generates the client explicitly.
+  PRISMA_CLI_QUERY_ENGINE_TYPE = "binary"
+
+[functions]
+  # Course downloads are streamed from disk by an access-checked route, so the
+  # generated documents and the Prisma engine have to be inside the function
+  # bundle — they are not static assets and Netlify will not infer them.
+  included_files = [
+    "content/**",
+    "node_modules/.prisma/client/**",
+    "node_modules/@prisma/client/**"
+  ]
+
+# Long-lived immutable assets. Everything else is server-rendered per request
+# and must not be cached — pages differ per signed-in learner.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
