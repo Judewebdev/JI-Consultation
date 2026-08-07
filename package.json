@@ -1,0 +1,40 @@
+{
+  "name": "ji-global-academy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JI Global Academy \u2014 learning platform for JI Consultation",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "db:push": "prisma db push",
+    "db:reset": "prisma db push --force-reset --skip-generate",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "setup": "prisma generate && prisma db push && npm run db:seed"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "bcryptjs": "3.0.3",
+    "jose": "6.2.8",
+    "next": "15.5.23",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "server-only": "^0.0.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "22.19.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "prisma": "6.19.3",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.10",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

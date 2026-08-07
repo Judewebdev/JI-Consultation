@@ -1,0 +1,32 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Local env & secrets
+.env
+.env.local
+.env*.local
+
+# SQLite dev database
+prisma/*.db
+prisma/*.db-journal
+prisma/dev.db*
+
+# Downloadable course material. Generated from prisma/content by `npm run
+# db:seed` — the authored source is committed, the built PDFs and worksheets
+# are not.
+content/resources/
+
+# Learner uploads
+storage/uploads/
+
+# Tooling
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+npm-debug.log*
+yarn-error.log*
+.vercel
+coverage/
