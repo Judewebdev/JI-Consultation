@@ -1,0 +1,23 @@
+{
+  "name": "ji-consultation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JI Consultation project workspace, wired for the 21st.dev CLI.",
+  "scripts": {
+    "21st": "21st",
+    "21st:whoami": "21st whoami",
+    "21st:usage": "21st usage",
+    "21st:context": "21st init --design-context",
+    "21st:context:check": "21st init --design-context --check",
+    "21st:context:refresh": "21st init --design-context --refresh",
+    "21st:review": "21st review .",
+    "21st:ci:whoami": "21st whoami --api-key $API_KEY_21ST",
+    "21st:ci:review": "21st review . --strict --json --api-key $API_KEY_21ST"
+  },
+  "devDependencies": {
+    "@21st-dev/cli": "^1.17.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,41 @@
+name: 21st UI Review
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    # Job level so the auth step's `if:` can actually see it.
+    # Step level env is not visible to that same step's condition.
+    env:
+      API_KEY_21ST: ${{ secrets.API_KEY_21ST }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install 21st CLI
+        run: npm i -g @21st-dev/cli
+
+      # Runs locally, no key needed.
+      - name: Local UI review
+        run: 21st review . --strict
+
+      # Informational. Drift is normal while the project is still moving.
+      - name: Design context drift check
+        continue-on-error: true
+        run: 21st init --design-context --check
+
+      # Skipped until an API_KEY_21ST repository secret exists.
+      # Settings -> Secrets and variables -> Actions -> New repository secret
+      - name: Auth smoke test
+        if: env.API_KEY_21ST != ''
+        run: 21st whoami --api-key "$API_KEY_21ST"

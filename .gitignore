@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Secrets. Never commit a real 21st.dev key.
+.env
+.env.local
+.env.*.local
+
+# 21st.dev local cache and generated output
+.21st/cache/
+.21st/tmp/
+21st-out/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
