@@ -1,5 +1,30 @@
 # JI-Consultation
 
+The JI Global website, covering both arms: the consulting agency and the digital skills academy.
+
+## The website
+
+One self-contained file: [`site/index.html`](site/index.html). No build step, no framework, no dependencies. Open it in a browser and it just runs.
+
+### Deploy to Netlify
+
+**Drag and drop.** Go to [app.netlify.com/drop](https://app.netlify.com/drop) and drop the `site` folder in. Live in about ten seconds.
+
+**Connect the repo.** Point Netlify at this repository. `netlify.toml` already sets `publish = "site"` with an empty build command, so `node_modules` and the repo tooling stay out of the deploy.
+
+### Before you go live
+
+The site ships with placeholders that are marked in the HTML. Search for `TODO`:
+
+- Contact email, WhatsApp number and the `og:` domain and preview image
+- The portrait in the About section
+- Three of the four stat figures
+- **Every testimonial.** They are placeholder text, not real quotes. Replace them with genuine ones or delete the section.
+
+The contact form is wired for [Netlify Forms](https://docs.netlify.com/forms/setup/) and needs no extra setup. Submissions land in your Netlify dashboard under Forms. It posts by AJAX with JS on, and falls back to a native POST with JS off.
+
+Design reasoning, palette and interaction rules: [docs/design-system.md](docs/design-system.md)
+
 ## Tooling
 
 This project is wired for the [21st.dev CLI](https://21st.dev), used for component search, UI generation and design review.
@@ -27,6 +52,9 @@ Full setup, commands, auth options and CI notes: [docs/21st-cli.md](docs/21st-cl
 
 | Path | What it is |
 | --- | --- |
+| `site/index.html` | The whole website, single file |
+| `netlify.toml` | Netlify publish dir, headers and cache rules |
+| `docs/design-system.md` | Palette, type scale and the reasoning behind them |
 | `.21st/` | Project design context the CLI reads before generating UI |
 | `.claude/skills/ui-ux-pro-max/` | Vendored UI/UX design database, searchable offline |
 | `.github/workflows/21st-review.yml` | Runs the local UI review on push and PR |

@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JI Global | Consulting Agency + Digital Skills Academy</title>
+<meta name="description" content="JI Global is two arms of one mission. The agency builds brand, positioning and systems for founders and professionals. The academy trains the digital and career skills that make people employable and self-reliant.">
+<meta name="author" content="Jude Iria">
+<meta name="theme-color" content="#0A1628">
+
+<!-- Open Graph / social -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="JI Global | Consulting Agency + Digital Skills Academy">
+<meta property="og:description" content="We build the brand and systems for founders who are done being the best kept secret, and we train the people who want the skills to get there themselves.">
+<meta property="og:site_name" content="JI Global">
+<!-- TODO: replace with your live domain and a 1200x630 preview image -->
+<meta property="og:url" content="https://jiglobal.netlify.app/">
+<meta property="og:image" content="https://jiglobal.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230A1628'/><text x='50' y='68' font-family='Georgia,serif' font-size='52' font-weight='700' fill='%23C89B3C' text-anchor='middle'>JI</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   JI GLOBAL - design tokens
+   Authority navy + trust gold. Agency = gold, Academy = copper.
+   ============================================================ */
+:root{
+  --ink:#0A1628;
+  --ink-2:#12243F;
+  --ink-3:#1B3A6B;
+  --gold:#C89B3C;
+  --gold-soft:#E3BE6E;
+  --copper:#B4530A;
+  --copper-soft:#D9884A;
+
+  --bg:#FBF9F6;
+  --surface:#FFFFFF;
+  --surface-2:#F4F0EA;
+  --fg:#0A1628;
+  --fg-muted:#55606F;
+  --fg-onDark:#F3EFE8;
+  --fg-onDark-muted:#A9B6C8;
+  --border:#E3DDD3;
+  --border-dark:rgba(227,190,110,.22);
+
+  --accent:var(--gold);
+  --accent-soft:var(--gold-soft);
+
+  --font-display:"Fraunces",Georgia,"Times New Roman",serif;
+  --font-body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+
+  --wrap:1180px;
+  --radius:14px;
+  --radius-lg:22px;
+  --shadow-sm:0 1px 2px rgba(10,22,40,.06),0 4px 14px rgba(10,22,40,.05);
+  --shadow-md:0 2px 6px rgba(10,22,40,.07),0 16px 40px rgba(10,22,40,.10);
+  --ease:cubic-bezier(.22,.72,.26,1);
+}
+/* Academy arm re-points the accent, so one rule swaps the whole section's tone */
+[data-arm="academy"]{ --accent:var(--copper); --accent-soft:var(--copper-soft); }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:var(--font-body); font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; }
+button{ font:inherit; color:inherit; }
+
+/* ---------- layout ---------- */
+.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:22px; }
+section{ padding-block:clamp(64px,8vw,116px); position:relative; }
+.dark{ background:var(--ink); color:var(--fg-onDark); }
+.dark h2,.dark h3{ color:#fff; }
+.dark p{ color:var(--fg-onDark-muted); }
+
+/* ---------- type ---------- */
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:700; line-height:1.08; letter-spacing:-.02em; margin:0 0 .5em; }
+h1{ font-size:clamp(2.5rem,6.2vw,4.6rem); font-weight:900; letter-spacing:-.035em; line-height:1.02; }
+h2{ font-size:clamp(1.95rem,3.9vw,3rem); }
+h3{ font-size:clamp(1.2rem,2vw,1.45rem); letter-spacing:-.015em; }
+p{ margin:0 0 1.1em; color:var(--fg-muted); }
+.lede{ font-size:clamp(1.05rem,1.6vw,1.2rem); max-width:60ch; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:9px;
+  font-size:.72rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:18px;
+}
+.eyebrow::before{ content:""; width:26px; height:1px; background:currentColor; opacity:.6; }
+.dark .eyebrow{ color:var(--gold-soft); }
+
+.section-head{ max-width:62ch; margin-bottom:clamp(38px,5vw,60px); }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:14px 26px; border-radius:999px; border:1px solid transparent;
+  font-size:.95rem; font-weight:600; text-decoration:none; cursor:pointer;
+  transition:transform .25s var(--ease), background-color .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease), color .25s var(--ease);
+  will-change:transform;
+}
+.btn:hover{ transform:translateY(-2px); }
+.btn:active{ transform:translateY(0); }
+.btn-primary{ background:var(--ink); color:#fff; box-shadow:var(--shadow-sm); }
+.btn-primary:hover{ background:var(--ink-3); box-shadow:var(--shadow-md); }
+.btn-gold{ background:var(--accent); color:#12100A; }
+.btn-gold:hover{ background:var(--accent-soft); }
+.btn-ghost{ border-color:var(--border); background:transparent; color:var(--fg); }
+.btn-ghost:hover{ border-color:var(--ink); background:rgba(10,22,40,.03); }
+.dark .btn-ghost{ border-color:var(--border-dark); color:var(--fg-onDark); }
+.dark .btn-ghost:hover{ border-color:var(--gold-soft); background:rgba(227,190,110,.08); }
+.btn .arr{ transition:transform .25s var(--ease); }
+.btn:hover .arr{ transform:translateX(4px); }
+
+:where(a,button,input,textarea,select,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--gold); outline-offset:3px; border-radius:6px;
+}
+.skip{ position:absolute; left:-9999px; top:0; z-index:200; }
+.skip:focus{ left:12px; top:12px; background:var(--ink); color:#fff; padding:11px 18px; border-radius:8px; }
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky; top:0; z-index:100;
+  background:rgba(251,249,246,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent; transition:border-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.nav.scrolled{ border-bottom-color:var(--border); box-shadow:0 4px 22px rgba(10,22,40,.05); }
+.nav-in{ display:flex; align-items:center; gap:22px; height:74px; }
+.brand{ display:flex; align-items:center; gap:11px; text-decoration:none; margin-right:auto; flex-shrink:0; }
+.mark{ width:38px; height:38px; border-radius:11px; background:var(--ink); display:grid; place-items:center; flex-shrink:0; }
+.mark span{ font-family:var(--font-display); font-weight:900; font-size:1rem; color:var(--gold); letter-spacing:.01em; }
+.brand-txt{ display:flex; flex-direction:column; line-height:1.12; }
+.brand-txt b{ font-family:var(--font-display); font-size:1.06rem; font-weight:700; letter-spacing:-.02em; }
+.brand-txt small{ font-size:.63rem; letter-spacing:.15em; text-transform:uppercase; color:var(--fg-muted); font-weight:500; }
+.nav-links{ display:flex; align-items:center; gap:28px; }
+.nav-links a{ text-decoration:none; font-size:.93rem; font-weight:500; color:var(--fg-muted); position:relative; padding:5px 0; transition:color .2s; }
+.nav-links a::after{ content:""; position:absolute; left:0; bottom:0; height:1.5px; width:0; background:var(--gold); transition:width .28s var(--ease); }
+.nav-links a:hover{ color:var(--fg); }
+.nav-links a:hover::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:10px; }
+.nav .btn{ padding:11px 20px; font-size:.88rem; }
+.burger{ display:none; width:44px; height:44px; border:1px solid var(--border); border-radius:11px; background:transparent; cursor:pointer; align-items:center; justify-content:center; }
+.burger span{ display:block; width:18px; height:1.6px; background:var(--fg); position:relative; transition:.25s var(--ease); }
+.burger span::before,.burger span::after{ content:""; position:absolute; left:0; width:18px; height:1.6px; background:var(--fg); transition:.25s var(--ease); }
+.burger span::before{ top:-6px; } .burger span::after{ top:6px; }
+.burger[aria-expanded="true"] span{ background:transparent; }
+.burger[aria-expanded="true"] span::before{ top:0; transform:rotate(45deg); }
+.burger[aria-expanded="true"] span::after{ top:0; transform:rotate(-45deg); }
+
+.mobile-menu{ display:none; border-top:1px solid var(--border); background:var(--bg); padding:14px 22px 26px; }
+.mobile-menu.open{ display:block; }
+.mobile-menu a{ display:block; padding:13px 0; text-decoration:none; font-weight:500; border-bottom:1px solid var(--border); }
+.mobile-menu .btn{ width:100%; margin-top:18px; }
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(56px,7vw,96px) clamp(56px,7vw,90px); overflow:hidden; }
+.hero-grid{ display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(36px,5vw,72px); align-items:center; }
+.hero h1 .accent{ color:var(--gold); font-style:italic; font-weight:700; }
+.hero-cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+.hero-note{ margin-top:22px; font-size:.87rem; color:var(--fg-muted); display:flex; align-items:center; gap:8px; }
+.dot{ width:7px; height:7px; border-radius:50%; background:#2E9E5B; flex-shrink:0; box-shadow:0 0 0 3px rgba(46,158,91,.16); }
+
+/* hero arm cards */
+.arms-visual{ display:grid; gap:14px; }
+.arm-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:26px 26px 24px; box-shadow:var(--shadow-sm); position:relative; overflow:hidden;
+  transition:transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s var(--ease);
+}
+.arm-card::before{ content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--accent); }
+.arm-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--accent); }
+.arm-card .tag{ font-size:.66rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); }
+.arm-card h3{ margin:9px 0 7px; }
+.arm-card p{ font-size:.94rem; margin:0 0 14px; }
+.arm-card .go{ font-size:.87rem; font-weight:600; color:var(--fg); text-decoration:none; display:inline-flex; align-items:center; gap:7px; }
+.arm-card .go .arr{ transition:transform .25s var(--ease); }
+.arm-card:hover .go .arr{ transform:translateX(4px); }
+.arm-card ul{ margin:0 0 16px; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:7px; }
+.arm-card li{ font-size:.76rem; font-weight:500; padding:4px 11px; border-radius:999px; background:var(--surface-2); color:var(--fg-muted); }
+
+/* ---------- credential strip ---------- */
+.strip{ border-block:1px solid var(--border); background:var(--surface); padding-block:26px; }
+.strip-in{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px 34px; }
+.cred{ display:flex; align-items:center; gap:10px; font-size:.87rem; font-weight:500; color:var(--fg-muted); }
+.cred svg{ width:17px; height:17px; color:var(--gold); flex-shrink:0; }
+
+/* ---------- stats ---------- */
+.stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border-dark); border:1px solid var(--border-dark); border-radius:var(--radius-lg); overflow:hidden; margin-top:52px; }
+.stat{ background:var(--ink); padding:30px 24px; }
+.stat b{ display:block; font-family:var(--font-display); font-size:clamp(2rem,3.4vw,2.7rem); font-weight:900; color:var(--gold-soft); line-height:1; letter-spacing:-.03em; }
+.stat span{ display:block; margin-top:9px; font-size:.83rem; color:var(--fg-onDark-muted); }
+
+/* ---------- arm switcher (tabs) ---------- */
+.switch{ display:inline-flex; padding:5px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; margin-bottom:34px; }
+.dark .switch{ background:rgba(255,255,255,.05); border-color:var(--border-dark); }
+.switch button{
+  border:0; background:transparent; cursor:pointer; padding:11px 24px; border-radius:999px;
+  font-size:.9rem; font-weight:600; color:var(--fg-muted);
+  transition:background-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.dark .switch button{ color:var(--fg-onDark-muted); }
+.switch button[aria-selected="true"]{ background:var(--surface); color:var(--fg); box-shadow:var(--shadow-sm); }
+.dark .switch button[aria-selected="true"]{ background:var(--ink-3); color:#fff; }
+
+.panel[hidden]{ display:none; }
+.panel{ animation:fade .45s var(--ease); }
+@keyframes fade{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none; } }
+
+.cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:18px; }
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:30px 28px; transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+}
+.card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--accent); }
+.card .ico{
+  width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+  background:color-mix(in srgb, var(--accent) 13%, transparent); color:var(--accent); margin-bottom:18px;
+}
+.card .ico svg{ width:21px; height:21px; }
+.card h3{ font-size:1.16rem; margin-bottom:9px; }
+.card p{ font-size:.94rem; margin:0 0 15px; }
+.card ul{ margin:0; padding:0; list-style:none; }
+.card li{ font-size:.88rem; color:var(--fg-muted); padding:6px 0 6px 22px; position:relative; }
+.card li::before{
+  content:""; position:absolute; left:0; top:14px; width:9px; height:5px;
+  border-left:1.7px solid var(--accent); border-bottom:1.7px solid var(--accent); transform:rotate(-45deg);
+}
+
+/* ---------- process ---------- */
+.steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1px; background:var(--border-dark); border:1px solid var(--border-dark); border-radius:var(--radius-lg); overflow:hidden; }
+.step{ background:var(--ink-2); padding:34px 30px; }
+.step b{ font-family:var(--font-display); font-size:2.5rem; font-weight:900; color:var(--gold); opacity:.5; line-height:1; display:block; margin-bottom:14px; letter-spacing:-.04em; }
+.step h3{ font-size:1.16rem; margin-bottom:8px; }
+.step p{ font-size:.93rem; margin:0; }
+
+/* ---------- about ---------- */
+.about-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(32px,5vw,64px); align-items:start; }
+.portrait{
+  position:relative; aspect-ratio:4/5; border-radius:var(--radius-lg); overflow:hidden;
+  background:linear-gradient(155deg,var(--ink) 0%,var(--ink-3) 100%);
+  display:grid; place-items:center; border:1px solid var(--border);
+}
+.portrait .ph{ text-align:center; padding:26px; }
+.portrait .ph .initials{ font-family:var(--font-display); font-size:4.6rem; font-weight:900; color:var(--gold); letter-spacing:-.04em; line-height:1; }
+.portrait .ph small{ display:block; margin-top:14px; font-size:.72rem; letter-spacing:.13em; text-transform:uppercase; color:var(--fg-onDark-muted); }
+.portrait img{ width:100%; height:100%; object-fit:cover; }
+.cred-list{ list-style:none; margin:22px 0 0; padding:0; display:grid; gap:11px; }
+.cred-list li{ display:flex; gap:11px; font-size:.92rem; color:var(--fg-muted); align-items:flex-start; }
+.cred-list svg{ width:16px; height:16px; color:var(--gold); flex-shrink:0; margin-top:4px; }
+
+/* ---------- books ---------- */
+.books{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+.book{
+  border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px; background:var(--surface);
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.book:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); }
+.book .spine{ width:42px; height:5px; border-radius:999px; background:var(--gold); margin-bottom:18px; }
+.book h3{ font-size:1.1rem; margin-bottom:8px; }
+.book p{ font-size:.9rem; margin:0; }
+
+/* ---------- testimonials ---------- */
+.quotes{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+.quote{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:30px 28px; }
+.quote .qm{ font-family:var(--font-display); font-size:3rem; line-height:.6; color:var(--gold); opacity:.4; }
+.quote blockquote{ margin:14px 0 20px; font-size:1rem; color:var(--fg); line-height:1.6; }
+.quote figcaption{ font-size:.85rem; color:var(--fg-muted); border-top:1px solid var(--border); padding-top:15px; }
+.quote figcaption b{ color:var(--fg); display:block; font-weight:600; }
+
+/* ---------- faq ---------- */
+.faq{ max-width:820px; }
+.faq details{ border-bottom:1px solid var(--border); }
+.faq summary{
+  cursor:pointer; list-style:none; padding:22px 44px 22px 0; position:relative;
+  font-family:var(--font-display); font-size:1.08rem; font-weight:600; letter-spacing:-.015em;
+}
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary::after{
+  content:""; position:absolute; right:8px; top:50%; width:10px; height:10px;
+  border-right:1.8px solid var(--gold); border-bottom:1.8px solid var(--gold);
+  transform:translateY(-70%) rotate(45deg); transition:transform .3s var(--ease);
+}
+.faq details[open] summary::after{ transform:translateY(-30%) rotate(-135deg); }
+.faq details p{ margin:0 0 22px; font-size:.96rem; max-width:70ch; }
+
+/* ---------- contact ---------- */
+.contact-grid{ display:grid; grid-template-columns:.95fr 1.05fr; gap:clamp(34px,5vw,64px); align-items:start; }
+.channels{ list-style:none; margin:28px 0 0; padding:0; display:grid; gap:12px; }
+.channels a{
+  display:flex; align-items:center; gap:13px; text-decoration:none; padding:15px 18px;
+  border:1px solid var(--border-dark); border-radius:var(--radius); font-size:.93rem; font-weight:500;
+  color:var(--fg-onDark); transition:border-color .25s var(--ease), background-color .25s var(--ease), transform .25s var(--ease);
+}
+.channels a:hover{ border-color:var(--gold-soft); background:rgba(227,190,110,.07); transform:translateX(4px); }
+.channels svg{ width:18px; height:18px; color:var(--gold); flex-shrink:0; }
+.channels span{ margin-left:auto; font-size:.8rem; color:var(--fg-onDark-muted); }
+
+form{ background:var(--surface); border-radius:var(--radius-lg); padding:clamp(26px,3.4vw,38px); box-shadow:var(--shadow-md); }
+.field{ margin-bottom:17px; }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+label{ display:block; font-size:.83rem; font-weight:600; margin-bottom:7px; color:var(--fg); }
+input,select,textarea{
+  width:100%; padding:13px 15px; border:1px solid var(--border); border-radius:10px;
+  background:var(--bg); font-family:inherit; font-size:.95rem; color:var(--fg);
+  transition:border-color .22s var(--ease), box-shadow .22s var(--ease), background-color .22s var(--ease);
+}
+input:focus,select:focus,textarea:focus{
+  outline:none; border-color:var(--gold); background:var(--surface);
+  box-shadow:0 0 0 3px rgba(200,155,60,.16);
+}
+textarea{ resize:vertical; min-height:118px; }
+select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2355606F' stroke-width='2.2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; background-size:17px; padding-right:42px; }
+form .btn{ width:100%; margin-top:6px; }
+.form-fine{ font-size:.78rem; color:var(--fg-muted); margin:14px 0 0; text-align:center; }
+.hp{ position:absolute; left:-9999px; opacity:0; height:0; overflow:hidden; }
+.form-msg{ margin-top:16px; padding:14px 16px; border-radius:10px; font-size:.9rem; display:none; }
+.form-msg.ok{ display:block; background:#EAF6EF; color:#186A3B; border:1px solid #BFE3CD; }
+.form-msg.err{ display:block; background:#FDECEA; color:#96271B; border:1px solid #F5C6C0; }
+
+/* ---------- footer ---------- */
+footer{ background:var(--ink); color:var(--fg-onDark-muted); padding-block:56px 34px; border-top:1px solid var(--border-dark); }
+.foot-grid{ display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:36px; margin-bottom:42px; }
+.foot-grid h4{ font-family:var(--font-body); font-size:.74rem; letter-spacing:.15em; text-transform:uppercase; color:var(--gold-soft); margin:0 0 15px; font-weight:600; }
+.foot-grid ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.foot-grid a{ text-decoration:none; font-size:.9rem; color:var(--fg-onDark-muted); transition:color .2s; }
+.foot-grid a:hover{ color:var(--gold-soft); }
+.foot-brand p{ font-size:.9rem; max-width:34ch; margin-top:16px; }
+.foot-brand .mark{ background:var(--ink-3); }
+.foot-bot{ border-top:1px solid var(--border-dark); padding-top:24px; display:flex; flex-wrap:wrap; gap:14px; justify-content:space-between; font-size:.82rem; }
+
+/* ---------- reveal ---------- */
+.rv{ opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+.rv.in{ opacity:1; transform:none; }
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .hero-grid,.about-grid,.contact-grid{ grid-template-columns:1fr; }
+  .stats{ grid-template-columns:repeat(2,1fr); }
+  .foot-grid{ grid-template-columns:1fr 1fr; }
+  .nav-links{ display:none; }
+  .burger{ display:flex; }
+  .nav-cta .btn{ display:none; }
+  .portrait{ max-width:340px; }
+}
+@media (max-width:560px){
+  body{ font-size:16px; }
+  .stats{ grid-template-columns:1fr; }
+  .foot-grid{ grid-template-columns:1fr; }
+  .row2{ grid-template-columns:1fr; }
+  .switch{ width:100%; }
+  .switch button{ flex:1; padding:11px 12px; font-size:.85rem; }
+  .strip-in{ justify-content:flex-start; }
+  .hero-cta .btn{ width:100%; }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  .rv{ opacity:1; transform:none; }
+}
+@media print{ .nav,footer,form{ display:none; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="JI Global home">
+      <span class="mark" aria-hidden="true"><span>JI</span></span>
+      <span class="brand-txt"><b>JI Global</b><small>Agency + Academy</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#arms">The Two Arms</a>
+      <a href="#work">What We Do</a>
+      <a href="#approach">Approach</a>
+      <a href="#about">About Jude</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="#contact">Book a call <span class="arr" aria-hidden="true">&rarr;</span></a>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#arms">The Two Arms</a>
+    <a href="#work">What We Do</a>
+    <a href="#approach">Approach</a>
+    <a href="#about">About Jude</a>
+    <a href="#faq">FAQ</a>
+    <a class="btn btn-primary" href="#contact">Book a call</a>
+  </div>
+</header>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Consulting Agency <span aria-hidden="true">+</span> Digital Skills Academy</span>
+      <h1>Most people don't have a talent problem. They have a <span class="accent">positioning</span> problem.</h1>
+      <p class="lede">JI Global is two arms of one mission. The agency builds the brand, the offer and the systems for founders and professionals who are tired of being the best kept secret. The academy trains the people who would rather learn to do it themselves.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#work" data-arm-jump="agency">Work with the agency <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-ghost" href="#work" data-arm-jump="academy">Join the academy</a>
+      </div>
+      <p class="hero-note"><span class="dot" aria-hidden="true"></span> Taking on new clients and cohort applications</p>
+    </div>
+
+    <div class="arms-visual">
+      <article class="arm-card rv" data-arm="agency">
+        <span class="tag">Arm 01 &middot; Done for you</span>
+        <h3>JI Global Consulting</h3>
+        <p>Brand strategy, positioning, business consulting and the marketing systems that make the work sell itself.</p>
+        <ul><li>Brand Strategy</li><li>Positioning</li><li>Web &amp; Media</li><li>Career Coaching</li></ul>
+        <a class="go" href="#work" data-arm-jump="agency">See the services <span class="arr" aria-hidden="true">&rarr;</span></a>
+      </article>
+      <article class="arm-card rv" data-arm="academy">
+        <span class="tag">Arm 02 &middot; Done by you</span>
+        <h3>JI Global Academy</h3>
+        <p>Digital skills, personal branding and career clarity, taught so you can charge for what you know.</p>
+        <ul><li>Digital Skills</li><li>Personal Brand</li><li>Career Clarity</li><li>Mentorship</li></ul>
+        <a class="go" href="#work" data-arm-jump="academy">See the programmes <span class="arr" aria-hidden="true">&rarr;</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDENTIAL STRIP ============ -->
+<div class="strip">
+  <div class="wrap strip-in">
+    <span class="cred"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 15a6 6 0 100-12 6 6 0 000 12z"/><path d="M8.2 13.9L7 22l5-3 5 3-1.2-8.1"/></svg> Certified Career Coach, Lotus Coaching LLC (Florida, USA)</span>
+    <span class="cred"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 19.5V5a2 2 0 012-2h13v18H6a2 2 0 01-2-1.5z"/><path d="M8 7h7M8 11h7"/></svg> Author of three published works</span>
+    <span class="cred"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z"/></svg> Client work across Nigeria and the United States</span>
+    <span class="cred"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/></svg> Founder, Eleazar Alliance Youth Initiative</span>
+  </div>
+</div>
+
+<!-- ============ THE TWO ARMS ============ -->
+<section id="arms" class="dark">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">One mission, two doors</span>
+      <h2>Some people want the result handed to them. Others want the skill that produces it.</h2>
+      <p class="lede">Both are valid. Pretending one house serves both without saying so is what confuses people, so we split it clean. Pick the door that matches where you actually are, not where you wish you were.</p>
+    </div>
+
+    <div class="steps rv">
+      <article class="step">
+        <b>01</b>
+        <h3>The Agency</h3>
+        <p>For founders, professionals and organisations with something real to sell and no clear way to say it. We do the positioning, the brand and the system, then hand you something that runs.</p>
+      </article>
+      <article class="step">
+        <b>02</b>
+        <h3>The Academy</h3>
+        <p>For students, career switchers and early founders who need skills more than they need a vendor. We teach the digital and branding work that turns into income.</p>
+      </article>
+      <article class="step">
+        <b>03</b>
+        <h3>The Overlap</h3>
+        <p>Most clients start in one and end up in both. Agency clients send their teams to the academy. Academy graduates come back with businesses that need building.</p>
+      </article>
+    </div>
+
+    <!-- TODO: replace the first three numbers with your real, verifiable figures before launch -->
+    <div class="stats rv">
+      <div class="stat"><b>2</b><span>Arms under one roof</span></div>
+      <div class="stat"><b>3</b><span>Books published</span></div>
+      <div class="stat"><b>2</b><span>Countries served</span></div>
+      <div class="stat"><b>1:1</b><span>Coaching, never outsourced</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT WE DO (tabbed) ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">What we actually do</span>
+      <h2>Services and programmes</h2>
+      <p class="lede">Switch between the two arms. Nothing here is a package you buy blind, every engagement starts with a conversation about whether it is the right one.</p>
+    </div>
+
+    <div class="switch rv" role="tablist" aria-label="Choose an arm">
+      <button role="tab" id="tab-agency" aria-controls="panel-agency" aria-selected="true">The Agency</button>
+      <button role="tab" id="tab-academy" aria-controls="panel-academy" aria-selected="false" tabindex="-1">The Academy</button>
+    </div>
+
+    <!-- AGENCY -->
+    <div class="panel" id="panel-agency" role="tabpanel" aria-labelledby="tab-agency" data-arm="agency" tabindex="0">
+      <div class="cards">
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span>
+          <h3>Brand Strategy &amp; Positioning</h3>
+          <p>The reason people scroll past good work is rarely quality. It is that they cannot place you in three seconds.</p>
+          <ul><li>Positioning and message architecture</li><li>Offer design and pricing logic</li><li>Visual and verbal identity direction</li><li>Competitor and audience mapping</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18"/><path d="M7 15l4-5 3.5 3.5L21 6"/></svg></span>
+          <h3>Business Consulting</h3>
+          <p>Diagnosis before prescription. We find the bottleneck that is actually costing you money, not the one that is easiest to talk about.</p>
+          <ul><li>Business model and revenue review</li><li>Service productisation</li><li>Client acquisition systems</li><li>Growth roadmap with owners and dates</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="4" width="20" height="15" rx="2"/><path d="M8 21h8M12 19v2M2 9h20"/></svg></span>
+          <h3>Website &amp; Media Systems</h3>
+          <p>A site that converts and a content engine that does not depend on your mood on a Tuesday.</p>
+          <ul><li>Website design and build</li><li>Social media management</li><li>Content systems and calendars</li><li>Analytics and reporting setup</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <h3>Executive &amp; Career Coaching</h3>
+          <p>One to one work for professionals who have outgrown their current story and need a sharper one.</p>
+          <ul><li>Career clarity and direction</li><li>Personal brand positioning</li><li>Interview and negotiation strategy</li><li>LinkedIn and visibility strategy</li></ul>
+        </article>
+      </div>
+    </div>
+
+    <!-- ACADEMY -->
+    <div class="panel" id="panel-academy" role="tabpanel" aria-labelledby="tab-academy" data-arm="academy" tabindex="0" hidden>
+      <div class="cards">
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M4 11v5c0 1.5 3.6 3 8 3s8-1.5 8-3v-5"/></svg></span>
+          <h3>Digital Skills Intensive</h3>
+          <p>The practical stack. Not theory you forget by Friday, but work you can be paid for by the end of the programme.</p>
+          <ul><li>Web and digital fundamentals</li><li>Content, design and media tools</li><li>Working with AI as an operator</li><li>Live projects with feedback</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2l2.6 6.6L21.5 9l-5 4.6 1.4 6.9L12 17l-5.9 3.5L7.5 13.6 2.5 9l6.9-.4L12 2z"/></svg></span>
+          <h3>Brand Leverage Blueprint</h3>
+          <p>The personal branding programme built on the book. How to become known for something specific enough to be hired for it.</p>
+          <ul><li>Finding your positioning angle</li><li>Content that builds authority</li><li>Audience growth without gimmicks</li><li>Turning attention into income</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span>
+          <h3>Career Clarity Coaching</h3>
+          <p>For the person who is busy but not moving. We name the actual direction and build the ninety day plan to walk it.</p>
+          <ul><li>Strengths and direction audit</li><li>Ninety day execution plan</li><li>CV and profile repositioning</li><li>Accountability check ins</li></ul>
+        </article>
+        <article class="card">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M17 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+          <h3>Mentorship Cohort</h3>
+          <p>Small group, long horizon. For people who want the skills and the character to hold whatever the skills attract.</p>
+          <ul><li>Group sessions and office hours</li><li>Peer accountability structure</li><li>Leadership and character development</li><li>Direct access for questions</li></ul>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPROACH ============ -->
+<section id="approach" class="dark">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">How the work runs</span>
+      <h2>Diagnose, build, compound.</h2>
+      <p class="lede">Same three moves in both arms. The order matters more than the effort, which is why most people who work hard still stall.</p>
+    </div>
+    <div class="steps rv">
+      <article class="step">
+        <b>01</b><h3>Diagnose</h3>
+        <p>We start with a conversation, not a proposal. Half the time the thing you came to fix is a symptom of something one layer down. We would rather find that first than sell you the wrong solution well.</p>
+      </article>
+      <article class="step">
+        <b>02</b><h3>Build</h3>
+        <p>Positioning, then systems, then skills, in that order. Building a content engine on top of unclear positioning just helps more people misunderstand you faster.</p>
+      </article>
+      <article class="step">
+        <b>03</b><h3>Compound</h3>
+        <p>The goal is not a good month. It is a structure that keeps producing after the engagement ends, and a person who can run it without you.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="rv">
+      <div class="portrait">
+        <!-- TODO: swap this placeholder for a real photo:
+             <img src="jude.jpg" alt="Jude Iria" width="800" height="1000"> -->
+        <div class="ph">
+          <div class="initials">JI</div>
+          <small>Add portrait here</small>
+        </div>
+      </div>
+    </div>
+    <div class="rv">
+      <span class="eyebrow">Who is behind this</span>
+      <h2>Jude Iria</h2>
+      <p class="lede">Business consultant, career coach and brand strategist. I work at the intersection of two things people usually keep apart: faith and commercial excellence.</p>
+      <p>I did not arrive here from a marketing degree. I studied Zoology at Ambrose Alli University, led a campus chapel as student pastor, and built the digital skills that now pay me while doing it. That route taught me the thing I teach hardest: your background is not your ceiling, but your positioning usually is.</p>
+      <p>Since then I have founded XIFIN, built JI Global Consultancy, run media and website marketing for a United States nonprofit, managed social for a Delaware based brand, and started the Eleazar Alliance Youth Empowerment Initiative to put digital skills and leadership training in front of young people who would otherwise never get access.</p>
+      <ul class="cred-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Certified Career Coach, Lotus Coaching LLC, Florida, USA</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> B.Sc. Zoology, Ambrose Alli University, Ekpoma</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Founder, XIFIN and JI Global Consultancy</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Founder, Eleazar Alliance Youth Empowerment Initiative</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Certifications in coaching skills, active listening and branding</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOOKS ============ -->
+<section style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">Written work</span>
+      <h2>Books and resources</h2>
+      <p class="lede">Everything I teach in the academy started as something I had to work out for myself first.</p>
+    </div>
+    <div class="books rv">
+      <article class="book">
+        <div class="spine" aria-hidden="true"></div>
+        <h3>Digital Skills Handbook</h3>
+        <p>A practical guide to the digital competencies that actually move a career or a business, written for people starting from zero.</p>
+      </article>
+      <article class="book">
+        <div class="spine" aria-hidden="true"></div>
+        <h3>Brand Leverage Blueprint</h3>
+        <p>A framework for building personal brand and influence on purpose rather than by accident, and converting it into real opportunity.</p>
+      </article>
+      <article class="book">
+        <div class="spine" aria-hidden="true"></div>
+        <h3>Anointing and Immorality</h3>
+        <p>On spiritual power, purity and consecration. Written for leaders who understand that gifting without character is a countdown.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============
+     IMPORTANT: these are PLACEHOLDERS, not real client quotes.
+     Replace every one with a genuine testimonial and a real name,
+     or delete this whole section before you launch. -->
+<section id="results">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">Client results</span>
+      <h2>What people say</h2>
+      <p class="lede">Placeholder section. Swap in real quotes from real clients, with their permission, then delete this line.</p>
+    </div>
+    <div class="quotes rv">
+      <figure class="quote">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <blockquote>Paste a real client quote here. The strongest ones name the specific problem they had before and the specific change afterwards.</blockquote>
+        <figcaption><b>Client name</b>Role, Company</figcaption>
+      </figure>
+      <figure class="quote">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <blockquote>Paste a real academy graduate quote here. Ask them what they could do after the programme that they could not do before.</blockquote>
+        <figcaption><b>Graduate name</b>Programme, Year</figcaption>
+      </figure>
+      <figure class="quote">
+        <div class="qm" aria-hidden="true">&ldquo;</div>
+        <blockquote>Paste a third real quote here, or delete this card so the row sits as two.</blockquote>
+        <figcaption><b>Client name</b>Role, Company</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" style="background:var(--surface-2)">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">Before you book</span>
+      <h2>Straight answers</h2>
+    </div>
+    <div class="faq rv">
+      <details open>
+        <summary>Agency or academy, which one is for me?</summary>
+        <p>If you have a business or a role that already generates something and you need it positioned and systemised, that is the agency. If you need the underlying skill before any of that is even relevant, that is the academy. If you are not sure, book the call and say so, we will tell you honestly even when the honest answer is the cheaper one.</p>
+      </details>
+      <details>
+        <summary>Do you work with clients outside Nigeria?</summary>
+        <p>Yes. I have handled media and website marketing for a United States nonprofit and social media for a Delaware based brand. The work runs remotely by default, and time zones have never been the hard part.</p>
+      </details>
+      <details>
+        <summary>What does it cost?</summary>
+        <p>It depends on scope, and any consultant who quotes you before understanding the problem is selling a package rather than a solution. Bring your situation to the call and you will leave with a number and a clear reason for it.</p>
+      </details>
+      <details>
+        <summary>Do you take one off projects?</summary>
+        <p>Sometimes, but be aware of what you are buying. A one off deliverable without the positioning behind it tends to look good and do very little. If that is genuinely all you need, say so and we will scope it properly.</p>
+      </details>
+      <details>
+        <summary>How is the faith side handled in commercial work?</summary>
+        <p>Directly but not imposed. My conviction is that faith and excellence belong in the same room, and it shapes how I work: honest scoping, no manipulation tactics, no selling people what they do not need. Client work is judged on results, not on what you believe.</p>
+      </details>
+      <details>
+        <summary>How quickly can we start?</summary>
+        <p>Discovery calls usually happen within the week. Agency engagements start once scope is agreed. Academy programmes run in cohorts, so the start date depends on where the current intake sits. Ask on the call and you will get the real date.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="dark">
+  <div class="wrap contact-grid">
+    <div class="rv">
+      <span class="eyebrow">Start here</span>
+      <h2>Tell me what you are actually trying to build.</h2>
+      <p class="lede">No pitch deck, no pressure. Send the real situation and you will get a straight read on whether I am the right person for it.</p>
+      <ul class="channels">
+        <!-- TODO: replace the placeholder email, phone and handles with your real ones -->
+        <li><a href="mailto:hello@judeiria.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg> hello@judeiria.com <span>Email</span></a></li>
+        <li><a href="https://wa.me/2340000000000" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 01-12.4 7.4L3 21l2.2-5.4A8.4 8.4 0 1121 11.5z"/></svg> WhatsApp <span>Fastest reply</span></a></li>
+        <li><a href="https://www.linkedin.com/in/jude-iria" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-9h4v1.5A4 4 0 0116 8z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> linkedin.com/in/jude-iria <span>LinkedIn</span></a></li>
+        <li><a href="https://www.instagram.com/jude_iria/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg> @jude_iria <span>Instagram</span></a></li>
+      </ul>
+    </div>
+
+    <div class="rv">
+      <!-- Netlify Forms: data-netlify enables capture, honeypot blocks bots.
+           Submissions appear under Netlify dashboard > Forms. -->
+      <form name="contact" id="contactForm" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact">
+        <p class="hp"><label>Leave this empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+        <div class="row2">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" required autocomplete="name" placeholder="Jane Doe">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email" placeholder="jane@company.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="interest">What are you here for?</label>
+          <select id="interest" name="interest" required>
+            <option value="">Choose one</option>
+            <option>Agency: brand strategy and positioning</option>
+            <option>Agency: business consulting</option>
+            <option>Agency: website and media systems</option>
+            <option>Agency: executive or career coaching</option>
+            <option>Academy: digital skills intensive</option>
+            <option>Academy: brand leverage blueprint</option>
+            <option>Academy: career clarity coaching</option>
+            <option>Academy: mentorship cohort</option>
+            <option>Speaking, partnership or something else</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">The situation, in your own words</label>
+          <textarea id="message" name="message" required placeholder="Where you are now, what you have tried, and what a good outcome looks like."></textarea>
+        </div>
+
+        <button class="btn btn-gold" type="submit">Send it <span class="arr" aria-hidden="true">&rarr;</span></button>
+        <p class="form-fine">Your details stay private. No list, no spam, no resale.</p>
+        <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top" aria-label="JI Global home">
+          <span class="mark" aria-hidden="true"><span>JI</span></span>
+          <span class="brand-txt"><b style="color:#fff">JI Global</b><small style="color:var(--fg-onDark-muted)">Agency + Academy</small></span>
+        </a>
+        <p>Raising spiritually grounded, digitally skilled leaders who influence business, education and technology.</p>
+      </div>
+      <div>
+        <h4>Agency</h4>
+        <ul>
+          <li><a href="#work" data-arm-jump="agency">Brand Strategy</a></li>
+          <li><a href="#work" data-arm-jump="agency">Business Consulting</a></li>
+          <li><a href="#work" data-arm-jump="agency">Web &amp; Media</a></li>
+          <li><a href="#work" data-arm-jump="agency">Career Coaching</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Academy</h4>
+        <ul>
+          <li><a href="#work" data-arm-jump="academy">Digital Skills</a></li>
+          <li><a href="#work" data-arm-jump="academy">Brand Leverage</a></li>
+          <li><a href="#work" data-arm-jump="academy">Career Clarity</a></li>
+          <li><a href="#work" data-arm-jump="academy">Mentorship</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://judeiria.com" target="_blank" rel="noopener noreferrer">judeiria.com</a></li>
+          <li><a href="https://ministerjude.netlify.app" target="_blank" rel="noopener noreferrer">Ministry</a></li>
+          <li><a href="https://www.linkedin.com/in/jude-iria" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/jude_iria/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>&copy; <span id="yr">2026</span> JI Global. All rights reserved.</span>
+      <span>Built for founders who are done being the best kept secret.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---- year ---- */
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  /* ---- sticky nav shadow ---- */
+  var nav = document.getElementById("nav");
+  var onScroll = function(){ nav.classList.toggle("scrolled", window.scrollY > 12); };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive:true });
+
+  /* ---- mobile menu ---- */
+  var burger = document.getElementById("burger");
+  var menu = document.getElementById("mobileMenu");
+  burger.addEventListener("click", function(){
+    var open = burger.getAttribute("aria-expanded") === "true";
+    burger.setAttribute("aria-expanded", String(!open));
+    burger.setAttribute("aria-label", open ? "Open menu" : "Close menu");
+    menu.classList.toggle("open", !open);
+  });
+  menu.addEventListener("click", function(e){
+    if (e.target.closest("a")) {
+      menu.classList.remove("open");
+      burger.setAttribute("aria-expanded", "false");
+      burger.setAttribute("aria-label", "Open menu");
+    }
+  });
+
+  /* ---- arm tabs (agency / academy) ---- */
+  var tabs = [document.getElementById("tab-agency"), document.getElementById("tab-academy")];
+  var panels = [document.getElementById("panel-agency"), document.getElementById("panel-academy")];
+
+  function selectArm(idx, focusTab){
+    tabs.forEach(function(t, i){
+      var on = i === idx;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      panels[i].hidden = !on;
+    });
+    if (focusTab) tabs[idx].focus();
+  }
+
+  tabs.forEach(function(tab, i){
+    tab.addEventListener("click", function(){ selectArm(i, false); });
+    tab.addEventListener("keydown", function(e){
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        selectArm((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true);
+      } else if (e.key === "Home") {
+        e.preventDefault(); selectArm(0, true);
+      } else if (e.key === "End") {
+        e.preventDefault(); selectArm(tabs.length - 1, true);
+      }
+    });
+  });
+
+  /* ---- any link with data-arm-jump opens the matching tab ---- */
+  document.querySelectorAll("[data-arm-jump]").forEach(function(link){
+    link.addEventListener("click", function(){
+      selectArm(link.getAttribute("data-arm-jump") === "academy" ? 1 : 0, false);
+    });
+  });
+
+  /* ---- scroll reveal ---- */
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var revealables = document.querySelectorAll(".rv");
+  if (reduce || !("IntersectionObserver" in window)) {
+    revealables.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revealables.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---- contact form: AJAX to Netlify, with graceful fallback ----
+     Without JS the form posts natively and Netlify shows its own success page. */
+  var form = document.getElementById("contactForm");
+  var msg = document.getElementById("formMsg");
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    var original = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+    msg.className = "form-msg";
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString()
+    })
+    .then(function(res){
+      if (!res.ok) throw new Error("Status " + res.status);
+      form.reset();
+      msg.className = "form-msg ok";
+      msg.textContent = "Got it. I read every message myself, expect a reply within two working days.";
+    })
+    .catch(function(){
+      msg.className = "form-msg err";
+      msg.innerHTML = 'That did not send. Email <a href="mailto:hello@judeiria.com" style="color:inherit">hello@judeiria.com</a> directly and it will reach me.';
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.innerHTML = original;
+    });
+  });
+})();
+</script>
+</body>
+</html>

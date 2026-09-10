@@ -27,10 +27,23 @@
     "patterns": []
   },
   "constraints": {
-    "must": [],
-    "avoid": []
+    "must": [
+      "Ship as a single self-contained HTML file, no build step",
+      "Keep gold #C89B3C as the agency accent and copper #B4530A as the academy accent, swapped via [data-arm]",
+      "Pair Fraunces for display with Inter for body, no third family",
+      "Respect prefers-reduced-motion on every animation",
+      "Keep a side gutter of at least 22px and work down to 400px wide",
+      "Use real, verifiable credentials only, never invented statistics or testimonials"
+    ],
+    "avoid": [
+      "Em dashes in any copy",
+      "Frameworks or bundlers, this site stays dependency free",
+      "Stock-photo filler and decorative imagery without purpose",
+      "Fabricated client logos, quotes or numbers",
+      "More than one primary call to action per section"
+    ]
   },
   "decisions": [],
   "evidence": [],
-  "generatedAt": "2026-09-10T00:08:03.636Z"
+  "generatedAt": "2026-09-10T00:16:59.593Z"
 }
