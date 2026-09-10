@@ -1,75 +1,87 @@
 # JI Global design system
 
-The source of truth is `site/index.html`, in the `:root` block at the top. This file explains the reasoning so nobody has to reverse engineer it later.
+Source of truth is the `:root` block at the top of `site/index.html`. This file explains the reasoning.
 
-Heads up on `.21st/design.json`: running `21st init --design-context --refresh` **keeps** `constraints.must` and `constraints.avoid`, but **wipes** `decisions`, `evidence` and everything the tool re-derives. The generated `DESIGN.md` header tells you to record decisions in that JSON. Do not. They get erased on the next refresh. Constraints survive, so those live in the JSON and the rationale lives here.
+Heads up on `.21st/design.json`: `21st init --design-context --refresh` **keeps** `constraints.must` and `constraints.avoid` but **wipes** `decisions`, `evidence` and everything the tool re-derives. The generated `DESIGN.md` tells you to record decisions in that JSON. Do not. They get erased. Constraints live in the JSON, reasoning lives here.
 
-## Palette
+## Direction
 
-Authority navy with a warm gold accent, drawn from the ui-ux-pro-max Legal Services / B2B trust palette. Gold rather than the usual corporate blue, because blue reads as generic tech and the brand is about excellence, not software.
+**Modern Dark (cinema)** plus **Aurora UI** mesh gradients, both from the ui-ux-pro-max skill. The rules that matter from that spec, all of them implemented:
 
-| Token | Value | Used for |
+- Never pure `#000000`. Base is `#06070F` with a layered gradient, because pure black smears on OLED and kills depth.
+- Two to three animated ambient blobs, `blur(96px)`, low opacity, slow oscillation.
+- Frosted glass on nav and cards, hairline `rgba(255,255,255,.09)` borders.
+- 16px to 32px radii.
+- `cubic-bezier(.16,1,.3,1)` easing on everything (Expo-out).
+- Accent glow behind primary buttons.
+
+## Brand palette
+
+Taken from the brand sheet, not invented.
+
+| Token | Value | Role |
 | --- | --- | --- |
-| `--ink` | `#0A1628` | Dark sections, primary buttons, logo mark |
-| `--ink-2` | `#12243F` | Step cards on dark |
-| `--ink-3` | `#1B3A6B` | Hover states, footer mark |
-| `--gold` | `#C89B3C` | **Agency accent**, eyebrows, icons, focus rings |
-| `--gold-soft` | `#E3BE6E` | Accent on dark backgrounds, stat figures |
-| `--copper` | `#B4530A` | **Academy accent** |
-| `--bg` | `#FBF9F6` | Page ground, warm off-white not sterile grey |
-| `--surface` | `#FFFFFF` | Cards, form |
-| `--surface-2` | `#F4F0EA` | Alternating section bands |
-| `--fg` / `--fg-muted` | `#0A1628` / `#55606F` | Body copy |
+| `--navy` | `#2C2D48` | Brand navy, feeds the background gradient and the second aurora blob |
+| `--sky` | `#18C3F3` | **Agency accent** |
+| `--gold` | `#BB7F27` | **Academy accent** |
+| `--bg-deep` | `#06070F` | Page ground, navy pushed near-black |
+| `--fg` / `--fg-mid` / `--fg-dim` | `#EDEEF4` / `#AEB5C7` / `#7D8497` | Three-step text ramp |
+| `--glass` | `rgba(255,255,255,.038)` | Card and nav fill |
 
-**The arm swap.** `[data-arm="academy"]` re-points `--accent` to copper. One rule flips the whole subtree, so the tab panels, icons and hover borders change tone without duplicating a single style. Add a third arm later and it is one more line.
+**The arm swap.** `body[data-arm="academy"]` re-points `--accent`, `--accent-lift`, `--accent-deep` and three alpha variants. One selector reskins the entire site: nav pill, aurora glow, buttons, kickers, icons, chips, focus rings, form states. The router sets that attribute, so nothing else has to know which arm is active.
 
 ## Typography
 
-Fraunces for display, Inter for body. An editorial serif signals authorship, which matters for a consultant who has published three books. Inter keeps the UI and long copy clean. Two families, no third.
+- Display: **Space Grotesk** 500 to 700. Geometric grotesque, closest match to the logo wordmark.
+- Body: **Inter** 400 to 600.
+- Micro-labels: **JetBrains Mono** 400 to 500, uppercase, wide tracking. This is what makes the eyebrows and status pills read as a product rather than a brochure.
+- `text-wrap: balance` on all headings, so long headlines stop ragging badly.
 
-- `h1`: `clamp(2.5rem, 6.2vw, 4.6rem)`, weight 900, tracking `-0.035em`
-- `h2`: `clamp(1.95rem, 3.9vw, 3rem)`, weight 700
-- Body: 17px, line height 1.65, dropping to 16px under 560px
-- Eyebrows: 0.72rem, uppercase, `0.16em` tracking, with a short rule before the text
+## Routing
 
-## Structure
+Single file, eight pages, no framework.
 
-The **Trust & Authority + Conversion** pattern from ui-ux-pro-max `landing.csv`:
+- Served over http(s): History API, clean URLs (`/agency/services`). Needs the SPA fallback in `netlify.toml`, which must be a **200, not a 301**, or deep links break.
+- Opened as `file://`: falls back to hash routing automatically, so double-clicking `index.html` still works.
 
-1. Hero with mission and credibility
-2. Proof strip (certifications, published work, reach)
-3. Solution overview (the two arms, then the tabbed services)
-4. Clear CTA path
+Every page lives in the DOM as `<div class="page" data-route="...">`, not in a `<template>`. Two reasons: the content is crawlable, and **Netlify Forms only detects forms present in the static HTML**. Forms inside a template would never be registered.
 
-Everything from the credential strip onward exists to close the gap between "this looks nice" and "this person is real."
+**Asset paths must be root-absolute** (`/assets/...`). A relative `assets/x.jpg` resolves against `/agency/` on a nested route and 404s. This bit us once already.
 
-## Interaction rules
+## Effects
 
-- One primary CTA per section. Competing buttons split intent and convert worse.
-- Hover lift is `translateY(-4px)` on `--ease` (`cubic-bezier(.22,.72,.26,1)`). Consistent everywhere.
-- Scroll reveal on `.rv` via IntersectionObserver, unobserved after firing so it never re-runs.
-- `prefers-reduced-motion` kills every animation and forces `.rv` visible. Not optional.
-- Focus rings are gold at 2px with 3px offset, on every interactive element.
+| Effect | Where |
+| --- | --- |
+| Aurora blobs | Three fixed radial gradients, 26s to 32s alternating drift |
+| Film grain | SVG `feTurbulence` data URI, 3.8% opacity, `overlay` blend |
+| Cursor spotlight | Follows the pointer, `rAF`-throttled, desktop only |
+| Card spotlight | `--mx`/`--my` custom props set per card on hover |
+| Magnetic buttons | Primary buttons translate toward the cursor |
+| Word-stagger headlines | `h1[data-split]` splits on load, 55ms per word, inline elements stay intact |
+| Scroll progress | Top bar, `scaleX` on a `rAF` scroll handler |
+| Reveal on scroll | IntersectionObserver, unobserved after firing, 70ms stagger |
+| Marquee | Track duplicated in JS so the loop is seamless, pauses on hover |
+
+All of it is gated behind `prefers-reduced-motion`, and pointer effects additionally require `(pointer: fine)`.
 
 ## Accessibility
 
-- Arm switcher is a real ARIA tablist: arrow keys, Home, End, roving `tabindex`.
-- FAQ uses native `details`/`summary`, so it works with JS disabled.
-- Skip link, semantic landmarks, `aria-live` on the form status message.
-- Body text hits WCAG AA against every background it sits on.
+- Arm switcher is a labelled button group with `aria-current`, not fake tabs.
+- Route changes update `document.title` and push it to an `aria-live` region.
+- FAQ uses native `details`/`summary`, so it works with JS off.
+- Skip link, focus-visible rings in the active accent, `aria-expanded` on the drawer, Escape closes it.
 
 ## Content rules
 
-No invented proof. No fake client quotes, no made up numbers, no logo walls of companies who were never clients. The testimonial section and three of the four stat tiles ship as clearly marked placeholders precisely so nobody is tempted to launch with fiction in them.
+No invented proof. No fake testimonials, no made-up client counts, no logo walls. The four stat tiles are structural facts (seven service lines, two countries, two arms, one senior lead), not performance claims.
 
-Also: no em dashes anywhere in the copy.
+David Albert's cards carry his real name, title and country. The bio is a marked placeholder because inventing a colleague's background is not a design decision.
 
-## Regenerating design intel
+No em dashes in any copy.
 
-The vendored skill answers design questions offline:
+## Querying the design skill
 
 ```bash
-python3 .claude/skills/ui-ux-pro-max/scripts/search.py "consulting landing page" --domain style
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "dark glassmorphism" --domain style
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "trust authority" --domain color
-python3 .claude/skills/ui-ux-pro-max/scripts/search.py "JI Global" --design-system
 ```

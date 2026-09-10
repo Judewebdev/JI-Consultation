@@ -28,18 +28,23 @@
   },
   "constraints": {
     "must": [
-      "Ship as a single self-contained HTML file, no build step",
-      "Keep gold #C89B3C as the agency accent and copper #B4530A as the academy accent, swapped via [data-arm]",
-      "Pair Fraunces for display with Inter for body, no third family",
-      "Respect prefers-reduced-motion on every animation",
-      "Keep a side gutter of at least 22px and work down to 400px wide",
-      "Use real, verifiable credentials only, never invented statistics or testimonials"
+      "Ship as one self-contained index.html plus files in site/assets, no build step",
+      "Use the brand palette only: navy #2C2D48, sky #18C3F3 (agency), gold #BB7F27 (academy), white #FEFEFE",
+      "Swap the whole arm via body[data-arm], never by duplicating styles",
+      "Asset paths must be root-absolute (/assets/...), relative paths 404 on nested SPA routes",
+      "Netlify SPA fallback must be status 200, not 301, or deep links break",
+      "Keep every page in the DOM, not in <template>, so Netlify Forms can detect the forms",
+      "Space Grotesk for display, Inter for body, JetBrains Mono for micro-labels",
+      "Never pure #000000 backgrounds",
+      "Gate all motion behind prefers-reduced-motion, and pointer effects behind (pointer: fine)",
+      "Use real, verifiable facts only, never invented statistics, testimonials or colleague bios"
     ],
     "avoid": [
       "Em dashes in any copy",
+      "Marketing jargon: leverage, synergy, unlock, elevate, seamless, cutting-edge, in today's fast-paced world",
       "Frameworks or bundlers, this site stays dependency free",
-      "Stock-photo filler and decorative imagery without purpose",
-      "Fabricated client logos, quotes or numbers",
+      "Fabricated client logos, quotes, numbers or team bios",
+      "Personal-brand content, this is a company site and the books belong on the personal site",
       "More than one primary call to action per section"
     ]
   },
